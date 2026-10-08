@@ -59,8 +59,6 @@ class Database:
                 "teacher_id" INTEGER NOT NULL,
                 FOREIGN KEY (teacher_id) REFERENCES teachers (id)
                 PRIMARY KEY("id" AUTOINCREMENT)
-                ON DELETE SET NULL
-                ON UPDATE CASCADE
             )
         """)
         self.cursor.execute("""
@@ -76,9 +74,8 @@ class Database:
             name VARCHAR(30), 
             group_id INT,
             FOREIGN KEY (group_id)
-              REFERENCES groups (id)
-              ON DELETE SET NULL
-              ON UPDATE CASCADE
+            REFERENCES groups (id)
+              
             )
         """)
         self.cursor.execute("""
@@ -92,8 +89,7 @@ class Database:
         ON DELETE SET NULL
         ON UPDATE CASCADE,
         FOREIGN KEY (student_id) REFERENCES students (id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE
+        
         )
         """)
 
@@ -116,7 +112,7 @@ try:
         db.execute_query(insert_group_query, (i, group))
     for i, subject in enumerate(SUBJECTS, start=1):
         insert_subject_query = "INSERT INTO subjects (id, subject_name, teacher_id) VALUES (?, ?, ?)"
-        db.execute_query(insert_subject_query, (i, subject, randint(1, 5)))  # Assuming teacher_id is same as id for simplicity
+        db.execute_query(insert_subject_query, (i, subject, randint(1, 8)))  # Assuming teacher_id is same as id for simplicity
     for i, teacher in enumerate(TEACHERS, start=1):
         insert_teacher_query = "INSERT INTO teachers (id, teacher_name) VALUES (?, ?)"
         db.execute_query(insert_teacher_query, (i, teacher))
@@ -127,7 +123,8 @@ try:
         for s,student in enumerate(STUDENTS, start=1):
             for j,subject in enumerate(SUBJECTS, start=1):
                 insert_mark_query = "INSERT INTO marks (id, score, subject_id, student_id) VALUES (?, ?, ?, ?)"
-                db.execute_query(insert_mark_query, (i*s*j*randint(1, 12), randint(1, 12), j, STUDENTS.index(student) + 1))
+                mark_id =  int(str(i)+str(j)+str(s))+randint(1, 255)
+                db.execute_query(insert_mark_query, (mark_id, randint(1, 12), j, STUDENTS.index(student) + 1))
     
     print("Data inserted successfully.")
 

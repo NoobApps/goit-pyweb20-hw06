@@ -1,0 +1,1 @@
+SELECT round(avg(score),3) AS AverageScore FROM marks;
