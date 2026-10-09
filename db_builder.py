@@ -28,7 +28,7 @@ class Database:
             self.connection.commit()
             return self.cursor.rowcount
         except sqlite3.Error as e:
-            print(f"Database error during execution: {e}")
+            print(f"Database error during execution: {e}{params}")
             self.connection.rollback() # Rollback if anything failed
             return 0
 
@@ -70,9 +70,10 @@ class Database:
         """)
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS students (
-            id INT PRIMARY KEY NOT NULL,
-            name VARCHAR(30), 
-            group_id INT,
+            "id" INTEGER NOT NULL,
+            "name" VARCHAR(30), 
+            "group_id" INT,
+            PRIMARY KEY("id" AUTOINCREMENT)
             FOREIGN KEY (group_id)
             REFERENCES groups (id)
               
@@ -80,11 +81,12 @@ class Database:
         """)
         self.cursor.execute("""
         CREATE TABLE IF NOT EXISTS marks(
-        id INT PRIMARY KEY NOT NULL,
-        score INT NOT NULL,
-        subject_id INT NOT NULL,
-        student_id INT NOT NULL,
-        date DATE DEFAULT CURRENT_TIMESTAMP,
+        "id" INTEGER NOT NULL,
+        "score" INT NOT NULL,
+        "subject_id" INT NOT NULL,
+        "student_id" INT NOT NULL,
+        "date" DATE DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY("id" AUTOINCREMENT)
         FOREIGN KEY (subject_id) REFERENCES subjects (id) 
         ON DELETE SET NULL
         ON UPDATE CASCADE,
@@ -119,12 +121,11 @@ try:
     for i, student in enumerate(STUDENTS, start=1):
         insert_student_query = "INSERT INTO students (id, name, group_id) VALUES (?, ?, ?)"
         db.execute_query(insert_student_query, (i, student, randint(1, 3)))  # Randomly assign group_id between 1 and 3
-    for i in range(1, 21):
+    for i in range(1, 11):
         for s,student in enumerate(STUDENTS, start=1):
             for j,subject in enumerate(SUBJECTS, start=1):
-                insert_mark_query = "INSERT INTO marks (id, score, subject_id, student_id) VALUES (?, ?, ?, ?)"
-                mark_id =  int(str(i)+str(j)+str(s))+randint(1, 255)
-                db.execute_query(insert_mark_query, (mark_id, randint(1, 12), j, STUDENTS.index(student) + 1))
+                insert_mark_query = "INSERT INTO marks (score, subject_id, student_id) VALUES (?, ?, ?)"
+                db.execute_query(insert_mark_query, (randint(1, 12), j, STUDENTS.index(student) + 1))
     
     print("Data inserted successfully.")
 
