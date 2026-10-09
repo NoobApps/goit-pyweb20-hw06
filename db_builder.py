@@ -4,8 +4,8 @@ from random import randint
 
 fake = Faker()
 DB_FILE = "data.db"
-SUBJECTS = ["Math", "Science", "History", "Art", "Music"]
-TEACHERS = [fake.name() for _ in range(8)]  # Generate 5 random teacher names
+SUBJECTS = ["Math", "Science", "History", "Art", "Music", "Chemistry", "Geography"]
+TEACHERS = [fake.name() for _ in range(5)]  # Generate 5 random teacher names
 STUDENTS = [fake.name() for _ in range(50)]  # Generate 50 random student names
 GROUPS = ["Alpha", "Beta", "Gamma"]  # Example group names
 
@@ -109,23 +109,23 @@ try:
     # 1. Initialize Database connection and tables
     db = Database(DB_FILE)
    
-    for i, group in enumerate(GROUPS, start=1):
-        insert_group_query = "INSERT INTO groups (id, group_name) VALUES (?, ?)"
-        db.execute_query(insert_group_query, (i, group))
-    for i, subject in enumerate(SUBJECTS, start=1):
-        insert_subject_query = "INSERT INTO subjects (id, subject_name, teacher_id) VALUES (?, ?, ?)"
-        db.execute_query(insert_subject_query, (i, subject, randint(1, 8)))  # Assuming teacher_id is same as id for simplicity
-    for i, teacher in enumerate(TEACHERS, start=1):
-        insert_teacher_query = "INSERT INTO teachers (id, teacher_name) VALUES (?, ?)"
-        db.execute_query(insert_teacher_query, (i, teacher))
-    for i, student in enumerate(STUDENTS, start=1):
-        insert_student_query = "INSERT INTO students (id, name, group_id) VALUES (?, ?, ?)"
-        db.execute_query(insert_student_query, (i, student, randint(1, 3)))  # Randomly assign group_id between 1 and 3
+    for group in GROUPS:
+        insert_group_query = "INSERT INTO groups (group_name) VALUES (?)"
+        db.execute_query(insert_group_query, (group,))
+    for subject in SUBJECTS:
+        insert_subject_query = "INSERT INTO subjects (subject_name, teacher_id) VALUES (?, ?)"
+        db.execute_query(insert_subject_query, (subject, randint(1, len(TEACHERS))))  # Assuming teacher_id is same as id for simplicity
+    for teacher in TEACHERS:
+        insert_teacher_query = "INSERT INTO teachers (teacher_name) VALUES (?)"
+        db.execute_query(insert_teacher_query, (teacher,))
+    for student in STUDENTS:
+        insert_student_query = "INSERT INTO students (name, group_id) VALUES (?, ?)"
+        db.execute_query(insert_student_query, (student, randint(1, lem(GROUPS))))  # Randomly assign group_id between 1 and 3
     for i in range(1, 11):
-        for s,student in enumerate(STUDENTS, start=1):
-            for j,subject in enumerate(SUBJECTS, start=1):
+        for student in STUDENTS:
+            for subject in SUBJECTS:
                 insert_mark_query = "INSERT INTO marks (score, subject_id, student_id) VALUES (?, ?, ?)"
-                db.execute_query(insert_mark_query, (randint(1, 12), j, STUDENTS.index(student) + 1))
+                db.execute_query(insert_mark_query, (randint(1, 12), SUBJECTS.index(subject)+1, STUDENTS.index(student) + 1))
     
     print("Data inserted successfully.")
 
