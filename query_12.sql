@@ -5,5 +5,4 @@ JOIN students s ON s.id=m.student_id
 JOIN groups g ON g.id=s.group_id
 WHERE d.id=1 AND g.id=2
 GROUP BY s.id
-HAVING max(m.date)
 ORDER BY s.name, m.id DESC;
