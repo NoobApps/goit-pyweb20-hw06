@@ -76,7 +76,6 @@ class Database:
             PRIMARY KEY("id" AUTOINCREMENT)
             FOREIGN KEY (group_id)
             REFERENCES groups (id)
-              
             )
         """)
         self.cursor.execute("""
