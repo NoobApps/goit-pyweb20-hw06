@@ -120,12 +120,11 @@ try:
     for student in STUDENTS:
         insert_student_query = "INSERT INTO students (name, group_id) VALUES (?, ?)"
         db.execute_query(insert_student_query, (student, randint(1, len(GROUPS))))  # Randomly assign group_id between 1 and 3
-    for i in range(1, 11):
-        for student in STUDENTS:
-            for subject in SUBJECTS:
+    for i in range(1, 21):
+            for student in STUDENTS:
                 insert_mark_query = "INSERT INTO marks (score, subject_id, student_id, date) VALUES (?, ?, ?, ?)"
-                db.execute_query(insert_mark_query, (randint(1, 12), SUBJECTS.index(subject)+1, STUDENTS.index(student) + 1,fake.date_this_year()))
-    
+                db.execute_query(insert_mark_query, (randint(1, 12), randint(1,7), STUDENTS.index(student) + 1,fake.date_this_year()))
+        
     print("Data inserted successfully.")
 
 except sqlite3.Error as e:
